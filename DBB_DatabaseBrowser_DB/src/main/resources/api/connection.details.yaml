@@ -1,0 +1,309 @@
+openapi: "3.0.1"
+info:
+  title: "DBB Database Browser - Connection details"
+  description: "DBB Database Browser Service"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080/api/v1"
+    description: "Local development"
+
+paths:
+  /connection-details:
+    get:
+      tags:
+        - "Connection details"
+      summary: "Get all database connection details."
+      operationId: "getDatabaseConnectionDetails"
+      responses:
+        200:
+          description: "200 Successful response"
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/Response"
+        404:
+          description: "Specific resource not found"
+          content:
+            application/problem+json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/NotFound"
+  /connection-detail:
+    post:
+      tags:
+        - "Connection details"
+      summary: "Add new database connection detail"
+      operationId: "addDatabaseConnectionDetail"
+      requestBody:
+        description: "Connection details content"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Request"
+      responses:
+        201:
+          description: "201 Successful submit of resource"
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/SubmitConfirmation"
+        400:
+          description: "Validation failed due to invalid or missing properties"
+          content:
+            application/problem+json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/BadRequestValidationFailed"
+components:
+  schemas:
+    Request:
+      required:
+        - "body"
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The custom name of the database instance "
+          nullable: true
+          example: "Subject line from secure email"
+        hostname:
+          type: "string"
+          description: "The hostname of the database"
+          example: "localhost"
+        port:
+          type: "string"
+          description: "The port where the database runs"
+          example: "5432"
+      additionalProperties: false
+      description: "The service request"
+    Response:
+      required:
+        - "name"
+        - "databaseConnectionDetails"
+      properties:
+        databaseConnectionId:
+          type: "string"
+          description: "An ID of the database connection detail"
+          example: "3a562e0a-0858-4d17-85c5-f6cb2c5ae9d3"
+        databaseConnectionDetail:
+          type: "object"
+          items:
+            $ref: "#/components/schemas/DatabaseConnectionDetail"
+    DatabaseConnectionDetail:
+      required:
+        - "name"
+        - "hostname"
+        - "port"
+        - "databaseName"
+        - "username"
+        - "password"
+      type: "object"
+      properties:
+        name:
+          type: "string"
+          description: "The custom name of the database instance "
+          nullable: true
+          example: "postgresql"
+        hostname:
+          type: "string"
+          description: "The hostname of the database"
+          example: "localhost"
+        port:
+          type: "string"
+          description: "The port where the database runs"
+          example: "5432"
+        databaseName:
+          type: "string"
+          description: "The name of the database"
+          example: "test"
+        username:
+          type: "string"
+          description: "The username for connecting to the database"
+          example: "username"
+        password:
+          type: "string"
+          description: "The password for connecting to the database"
+          example: "password"
+      additionalProperties: false
+      description: "The database connection details."
+    SubmitConfirmation:
+      type: "object"
+      properties:
+        _status:
+          allOf:
+            - $ref: "#/components/schemas/ConfirmationMessages"
+            - $ref: "#/components/schemas/InfoMessages"
+            - $ref: "#/components/schemas/WarningMessages"
+            - $ref: "#/components/schemas/ErrorMessages"
+    Forbidden:
+      required:
+        - "status"
+        - "title"
+        - "type"
+      type: "object"
+      properties:
+        type:
+          type: "string"
+          enum:
+            - "/api/status-codes/forbidden"
+        status:
+          type: "integer"
+          description: "HTTP error code"
+          enum:
+            - 403
+        title:
+          type: "string"
+          example: "You are not authorized to call this service"
+      description: "Forbidden"
+    BadRequestValidationFailed:
+      required:
+        - "status"
+        - "title"
+        - "type"
+      type: "object"
+      properties:
+        type:
+          type: "string"
+          description: "Standardized type `validation-error`"
+          enum:
+            - "/api/status-codes/validation-error"
+        status:
+          type: "integer"
+          description: "HTTP error code"
+          enum:
+            - 400
+        title:
+          type: "string"
+          description: "Human-readable error string, like \"Too many results\""
+          example: "Input did not pass validation"
+        detail:
+          type: "string"
+          format: "text/markdown"
+          example: "Detail message **markdown** tags ..."
+        invalid_params:
+          type: "array"
+          items:
+            required:
+              - "name"
+              - "reason"
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                description: "Attribute name of resource to map reason message. E.g.,\
+                  \ `firstname` or `phone.mobile` or `hobbies[0]`"
+              reason:
+                type: "string"
+                description: "Translated explanation to the user how to resolve the\
+                  \ issue. E.g., `Please fill in the First Name field`"
+            description: "If validation fails on specific attributes that can be mapped\
+              \ to the posted data-structure"
+      description: "Validation Failures http://sdlc-agile.swissbank.com/confluence/display/AIF/PS+Developer+Guide#PSDeveloperGuide-InputValidationForm"
+    NotFound:
+      required:
+        - "status"
+        - "title"
+        - "type"
+      type: "object"
+      properties:
+        type:
+          type: "string"
+          description: "The requested specific resource was not found"
+          enum:
+            - "/api/status-codes/not-found"
+        status:
+          type: "integer"
+          description: "HTTP error code"
+          enum:
+            - 404
+        title:
+          type: "string"
+          example: "Database connection not found."
+      description: "The requested specific resource was not found"
+    ConfirmationMessages:
+      type: "object"
+      properties:
+        confirmations:
+          type: "array"
+          items:
+            required:
+              - "title"
+            type: "object"
+            properties:
+              title:
+                type: "string"
+                description: "A brief localized summary for an end-user"
+                example: "Record successfully saved"
+              detail:
+                type: "string"
+                format: "text/markdown"
+                example: "You will be **contacted** ..."
+      description: "Confirmation status message within a HTTP 200 response"
+    InfoMessages:
+      type: "object"
+      properties:
+        info:
+          type: "array"
+          items:
+            required:
+              - "title"
+            type: "object"
+            properties:
+              title:
+                type: "string"
+                description: "A brief localized summary for an end-user"
+                example: "Today is a public holiday in Switzerland..."
+              detail:
+                type: "string"
+                format: "text/markdown"
+                example: "The transaction will be **executed** on..."
+      description: "Information status message within a HTTP 200 response"
+    WarningMessages:
+      type: "object"
+      properties:
+        warnings:
+          type: "array"
+          items:
+            required:
+              - "title"
+            type: "object"
+            properties:
+              title:
+                type: "string"
+                description: "A brief localized summary for an end-user"
+                example: "Due to a public holiday, your ..."
+              detail:
+                type: "string"
+                format: "text/markdown"
+                example: "The transaction will be **executed** on..."
+      description: "Warning status message within a HTTP 200 response"
+    ErrorMessages:
+      type: "object"
+      properties:
+        errors:
+          type: "array"
+          items:
+            required:
+              - "title"
+            type: "object"
+            properties:
+              title:
+                type: "string"
+                description: "A brief localized summary for an end-user"
+                example: "Processing failed due to..."
+              detail:
+                type: "string"
+                format: "text/markdown"
+                example: "One of five instruction could not be **processed** due to..."
+      description: "Error status message within a HTTP 200 response"
+  responses:
+    SubmitConfirmation:
+      description: "201 Successful submit of resource"
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: "#/components/schemas/SubmitConfirmation"
+    SuccessConfirmation:
+      description: "200 Successful response"
+      content:
+        application/json; charset=utf-8:
+          schema:
+            $ref: "#/components/schemas/Response"
