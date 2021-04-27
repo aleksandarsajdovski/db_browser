@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Database connection details controller.
+ */
 @RestController
 @Tag(name = "Database connection details", description = "The database connection details API")
 public class ConnectionDetailsController {
@@ -68,6 +71,11 @@ public class ConnectionDetailsController {
         return ResponseEntity.ok(connectionDetailsResponse);
     }
 
+    /**
+     * Save database connection details.
+     * @param connectionDetailsRequest the {@link ConnectionDetailsRequest}.
+     * @return Http status if the resource is created.
+     */
     @Operation(summary = "Save database connection details", description = "Save database connection details.")
     @PostMapping("/connection-details")
     ResponseEntity<Void> addDatabaseConnectionDetails(
@@ -80,6 +88,11 @@ public class ConnectionDetailsController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    /**
+     * Method used for deleting specific connection details resource from the database.
+     * @param id the id of the connection details.
+     * @return Http status based on deletion status.
+     */
     @Operation(summary = "Delete database connection details",
             description = "Delete given DatabaseConnection object from the database")
     @DeleteMapping("/connection-details/{id}")
@@ -90,9 +103,14 @@ public class ConnectionDetailsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    @Operation(summary = "Delete database connection details",
-            description = "Remove given DatabaseConnection object from the database")
+    /**
+     * Method used for updating specific connection details resource from the database.
+     * @param id The id of the connection details.
+     * @param connectionDetailsRequest the {@link ConnectionDetailsRequest} send for updating.
+     * @return Http status based on update status.
+     */
+    @Operation(summary = "Update database connection details",
+            description = "Update given DatabaseConnection object from the database")
     @PutMapping("/connection-details/{id}")
     ResponseEntity<Void> updateDatabaseConnectionDetails(
             @PathVariable long id,

@@ -7,9 +7,9 @@ import com.db.browser.integration.mappers.BrowseDatabaseMapper;
 import com.db.browser.spi.BrowseDatabaseService;
 import com.db.browser.spi.exceptions.DatabaseConnectionDetailsNotFoundException;
 import com.db.browser.spi.model.browser.ColumnDTO;
-import com.db.browser.spi.model.browser.preview.PreviewTableDTO;
 import com.db.browser.spi.model.browser.SchemaDTO;
 import com.db.browser.spi.model.browser.TableDTO;
+import com.db.browser.spi.model.browser.preview.PreviewTableDTO;
 import com.db.browser.spi.model.browser.preview.RowDTO;
 import com.db.browser.spi.model.browser.statistics.TableStatisticsDTO;
 import org.slf4j.Logger;
@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class BrowseDatabaseServiceImpl implements BrowseDatabaseService {
@@ -35,6 +33,10 @@ public class BrowseDatabaseServiceImpl implements BrowseDatabaseService {
         this.mapper = mapper;
     }
 
+    /**
+     *  Returns list with all schemas from DB.
+     * @return the list with schemas.
+     */
     public List<String> getSchemas() {
         List<String> schemas = null;
         try {
@@ -45,6 +47,10 @@ public class BrowseDatabaseServiceImpl implements BrowseDatabaseService {
         return schemas;
     }
 
+    /**
+     *  Returns list with all tables from DB.
+     * @return the list with tables.
+     */
     @Override
     public List<String> getTables() {
         List<String> tables = null;
@@ -56,6 +62,10 @@ public class BrowseDatabaseServiceImpl implements BrowseDatabaseService {
         return tables;
     }
 
+    /**
+     *  Returns list with all columns from DB.
+     * @return the list with columns.
+     */
     @Override
     public List<String> getColumns() {
         List<String> columns = null;
@@ -67,6 +77,10 @@ public class BrowseDatabaseServiceImpl implements BrowseDatabaseService {
         return columns;
     }
 
+    /**
+     *  Returns structured metadata for the database.
+     * @return the list of {@link SchemaDTO}.
+     */
     @Override
     public List<SchemaDTO> getSimpleStructureMetadata() {
         List<MetadataStructure> simpleStructureMetadata = browseDatabaseRepository.getSimpleStructureMetadata();
@@ -74,6 +88,10 @@ public class BrowseDatabaseServiceImpl implements BrowseDatabaseService {
         return schemaDTOS;
     }
 
+    /**
+     *  Returns list with tables statistics.
+     * @return the list {@link TableStatisticsDTO}.
+     */
     @Override
     public List<TableStatisticsDTO> getStatisticsForTables() {
 
@@ -83,6 +101,12 @@ public class BrowseDatabaseServiceImpl implements BrowseDatabaseService {
         return tableStatisticsDTOS;
     }
 
+
+    /**
+     * Returns data preview for given table name.
+     * @param tableName the table name.
+     * @return the {@link PreviewTableDTO}.
+     */
     @Override
     public PreviewTableDTO getDataPreview(String tableName) {
 

@@ -1,11 +1,12 @@
 package com.db.browser.integration.mappers;
 
-import com.db.browser.database.model.ConnectionDetails;
 import com.db.browser.database.model.TableStatistics;
-import com.db.browser.spi.model.ConnectionDetailsDTO;
 import com.db.browser.spi.model.browser.statistics.TableStatisticsDTO;
 import org.springframework.stereotype.Component;
 
+/**
+ * Browse database mapper.
+ */
 @Component
 public class BrowseDatabaseMapper {
 

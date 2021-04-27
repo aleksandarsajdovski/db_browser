@@ -14,6 +14,9 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Change datasource aspect class.
+ */
 @Aspect
 @Component
 public class ChangeDatasourceAspect {
@@ -31,6 +34,14 @@ public class ChangeDatasourceAspect {
         this.datasources = datasources;
     }
 
+    /**
+     * Around method on annotation {@link com.db.browser.spi.annotations.ChangeDatasource}.
+     * Method used for switching datasources, the default one is set in a temporary variable while the target
+     * datasource is fetched from the database and replaced in the jdbc template as current Datasource.
+     * @param joinPoint
+     * @return
+     * @throws Throwable
+     */
     @Around("@annotation(com.db.browser.spi.annotations.ChangeDatasource)")
     public Object changeDatasource(ProceedingJoinPoint joinPoint) throws Throwable {
 

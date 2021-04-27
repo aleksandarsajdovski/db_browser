@@ -9,11 +9,11 @@ import java.util.List;
  */
 public interface ConnectionDetailsService {
 
-    boolean updateDatabaseConnectionDetails(long connectionDetailsId, ConnectionDetailsDTO connectionDetailsDTO);
+    void updateDatabaseConnectionDetails(long connectionDetailsId, ConnectionDetailsDTO connectionDetailsDTO);
 
-    boolean deleteDatabaseConnectionDetails(long connectionDetailsId);
+    void deleteDatabaseConnectionDetails(long connectionDetailsId);
 
-    boolean addDatabaseConnectionDetails(ConnectionDetailsDTO connectionDetailsDTO);
+    void addDatabaseConnectionDetails(ConnectionDetailsDTO connectionDetailsDTO);
 
     ConnectionDetailsDTO getDatabaseConnectionDetails(long connectionDetailsId);
 

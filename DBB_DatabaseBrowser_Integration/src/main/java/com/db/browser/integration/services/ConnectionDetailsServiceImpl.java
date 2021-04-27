@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Implementation of {@link ConnectionDetailsService}.
+ */
 @Service
 public class ConnectionDetailsServiceImpl implements ConnectionDetailsService {
 
@@ -26,34 +29,49 @@ public class ConnectionDetailsServiceImpl implements ConnectionDetailsService {
         this.mapper = mapper;
     }
 
+    /**
+     * Method used for updating connection details into database.
+     * @param id the connection details id.
+     * @param connectionDetailsDTO the {@link ConnectionDetailsDTO}.
+     */
     @Override
-    public boolean updateDatabaseConnectionDetails(long id, ConnectionDetailsDTO connectionDetailsDTO) {
+    public void updateDatabaseConnectionDetails(long id, ConnectionDetailsDTO connectionDetailsDTO) {
 
         ConnectionDetails connectionDetails = mapper.convertDTOtoConnectionDetails(connectionDetailsDTO);
         boolean update = connectionDetailsRepositoryImpl.update(id, connectionDetails);
         if(!update)
             throw new DatabaseConnectionDetailsNotFoundException(NO_DATABASE_CONNECTION_DETAILS_FOUND);
-        return update;
     }
 
+    /**
+     * Method used for deleting connection details into database.
+     * @param connectionDetailsId the connection details id.
+     */
     @Override
-    public boolean deleteDatabaseConnectionDetails(long connectionDetailsId) {
+    public void deleteDatabaseConnectionDetails(long connectionDetailsId) {
             boolean delete = connectionDetailsRepositoryImpl.deleteById(connectionDetailsId);
         if(!delete)
             throw new DatabaseConnectionDetailsNotFoundException(NO_DATABASE_CONNECTION_DETAILS_FOUND);
-        return delete;
     }
 
+    /**
+     * Method used for creating connection details into database.
+     * @param connectionDetailsDto the connection details {@link ConnectionDetailsDTO}.
+     */
     @Override
-    public boolean addDatabaseConnectionDetails(ConnectionDetailsDTO connectionDetailsDto) {
+    public void addDatabaseConnectionDetails(ConnectionDetailsDTO connectionDetailsDto) {
         ConnectionDetails connectionDetails =
                 mapper.convertDTOtoConnectionDetails(connectionDetailsDto);
         boolean saved = connectionDetailsRepositoryImpl.save(connectionDetails);
         if(saved)
             throw new DataIntegrityViolationException("Error while saving the connection details");
-        return saved;
     }
 
+    /**
+     * Method used to get connection details based on given connection details id.
+     * @param connectionDetailsId the connection details id.
+     * @return the {@link ConnectionDetailsDTO}.
+     */
     @Override
     public ConnectionDetailsDTO getDatabaseConnectionDetails(long connectionDetailsId) {
 
@@ -68,6 +86,10 @@ public class ConnectionDetailsServiceImpl implements ConnectionDetailsService {
         return connectionDetailsDTO;
     }
 
+    /**
+     * Method used to get all connection details in the database.
+     * @return the list of {@link ConnectionDetailsDTO}.
+     */
     @Override
     public List<ConnectionDetailsDTO> getAllDatabaseConnectionsDetails() {
 

@@ -25,6 +25,10 @@ public class BrowseDatabaseRepositoryImpl {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    /**
+     * Get all schemas.
+     * @return list with schema names.
+     */
     public List<String> getAllSchemas() {
 
         List<String> query = jdbcTemplate
@@ -33,6 +37,10 @@ public class BrowseDatabaseRepositoryImpl {
         return query;
     }
 
+    /**
+     * Get all tables.
+     * @return list with tables names.
+     */
     public List<String> getAllTables() {
         List<String> query = jdbcTemplate
                 .queryForList(
@@ -43,6 +51,10 @@ public class BrowseDatabaseRepositoryImpl {
         return query;
     }
 
+    /**
+     * Get all columns.
+     * @return list with columns names.
+     */
     public List<String> getAllColumns() {
         List<String> query = jdbcTemplate
                 .queryForList("SELECT column_name FROM information_schema.columns " +
@@ -52,6 +64,10 @@ public class BrowseDatabaseRepositoryImpl {
         return query;
     }
 
+    /**
+     * Get simple structure metadata for the database.
+     * @return list of {@link MetadataStructure}
+     */
     public List<MetadataStructure> getSimpleStructureMetadata() {
 
         List<MetadataStructure> query = jdbcTemplate.query(structureColumnMetadata, new DataStructureRowMapper());
@@ -59,6 +75,10 @@ public class BrowseDatabaseRepositoryImpl {
         return query;
     }
 
+    /**
+     * Get table structure metadata for given table name.
+     * @return list table structure metadata.
+     */
     public List<Map<String, Object>> getTableStructureMetadata(String tableName) {
         String sql = "SELECT * FROM " + tableName;
         List<Map<String, Object>> maps = jdbcTemplate.queryForList(sql);
@@ -66,6 +86,10 @@ public class BrowseDatabaseRepositoryImpl {
         return maps;
     }
 
+    /**
+     * Get tables statistics from database.
+     * @return list {@link TableStatistics}.
+     */
     public List<TableStatistics> getTablesStatistics() {
         String sql = "SELECT ut.n_live_tup as number_rows, count(c.column_name) as number_attributes, c.table_name " +
                 "FROM pg_stat_user_tables as ut INNER JOIN information_schema.columns as c ON  ut.relname = c.table_name" +
